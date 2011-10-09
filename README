@@ -1,0 +1,51 @@
+PHP Comport class
+------------------------------------------------------
+This project is a PECL extension for handling com port(rs232, usb tty) comunication on both Windows and Linux/POSIX(OSX). The extension creates a PHP class Comport.
+The Comport class has several properties and 4 methods:
+  __constuct($com)	- creates an object. This can be used without parameter, but then sets com to COM1.
+  openPort()		- opens port
+  closePort()		- closes port/useful if you change port parameters and want to reopen port/
+  writeData($data)	- writes $data to port
+  readData($bytestoread)- reads $bytestoread bytes from port and returns a string. If less than $bytestoread bytes are available the function returns them after a timeout. If no parameter is passed, $bytestoread is assumed to be 1.
+  $bauds		- a property to set bitrate- handles all bitrates in termios.h(0-4000000)
+  $com 			- file name of port to use
+  $data			- number of bits- 5,6,7 or 8
+  $stop			- number of stop bits- 1/t
+  $rts			- RTS flow control. It's an integer used as boolean- 0 for false and other values for true.
+  $dtr			- DTR flow control. It's an integer used as boolean- 0 for false and other values for true.
+  $xon			- XON flow control. It's an integer used as boolean- 0 for false and other values for true.
+  $parity		- parity. Can be N,E or O for none, even and odd.
+  $timeout		- timeout. This sets read timeout in miliseconds so we can read without blocking system.
+Normal usage:
+  $com= new Comport('COM1');
+  $com->bauds= 9600;
+  $com->parity= 'N';
+  $com->data= 8;
+  $com->stop= 1;
+  $com->timeout= 200;
+  $com->openPort();
+  $com->writeData('test');
+  $t= $com->readData();
+  $com->closePort();
+
+The problem behind the decision for making the Comport class PHP extension is pretty simple- sometimes we want to comunicate with serial devices- cash registers, scales. On POSIX systems it's easy to operate with standard file operations and just use stty to setup comunication parameters(as phpSerial does), but on Windows there is a problem- in pseudo DOS mode as php scripts work you may not set read timeout. To make a standard way of comunication on both system types we need a PECL extension that can use the Windows API to setup comunication timeout.
+There are two other serial comunication projects for PHP- one is PECL too and is comercial, the other is a PHP class calles phpSerial which works fine on Linux, but on Windows systems it just can't read ports and hangs the system as it tries to work through the scenario with using mode command that can't set timeouts.
+OK, after this long description for a project that took me two days to write it(less than the time for this README ;) ), lets see how to compile:
+on Linux it's easy. I assume you have Ubuntu as me:
+1. install php-dev(apt-get install php-dev)
+2. in the source folder for the Comport extension call compile.sh or call:
+- phpize
+- configure --enable-phpcomport
+- make
+3. copy the phpcomport.so library to your php extensions dir(/usr/lib/php5/20090626 is for php5 on my pc)
+4. enable extension in php.ini (extension= phpcomport)
+
+on Windows it's more complicated:
+1. download php sources(On http://windows.php.net you can find 5.3.8)- preferably the thread-safe ones, and extract them
+2. download a binary distribution for the same php version as the sources and extract it
+3. open the .vcproj and setup new additional include dirs for the project- Zend, TSRM, main and root of the php sources
+4. in the additional library path for the project set a path to the dev directory of the php binaries(there must be php5ts.lib)
+5. if you use non-thread safe version of php(IIS distribution), go to stdafx.h and comment the line with "#define ZTS 1" in it. 
+6. build the project and copy the phpcomport.dll file to the ext dir of the php binary instalation
+
+The project has a copy of phpcomport.dll for PHP5.3.8 thread-safe (the only binary dristribution on my Windows VM) in it.
