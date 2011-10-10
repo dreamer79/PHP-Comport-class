@@ -21,6 +21,7 @@
 			OutputDirectory="$(ProjectDir)builds\win32\$(ConfigurationName)"
 			IntermediateDirectory="$(ProjectDir)builds\win32\$(ConfigurationName)"
 			ConfigurationType="2"
+			UseOfMFC="1"
 			CharacterSet="2"
 			>
 			<Tool
@@ -45,7 +46,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FIRSTPHPEXT_EXPORTS;ZEND_DEBUG = 0;ZTS =1;ZEND_WIN32;PHP_WIN32"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="1"
 				PrecompiledHeaderFile="$(ProjectDir)builds\win32\$(ConfigurationName)\$(TargetName).pch"
 				WarningLevel="3"
@@ -100,7 +101,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -122,10 +123,11 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FIRSTPHPEXT_EXPORTS"
+				AdditionalIncludeDirectories="&quot;C:\phpdev\php-5.3.8\ext&quot;;&quot;C:\phpdev\php-5.3.8\TSRM&quot;;&quot;C:\phpdev\php-5.3.8\Zend&quot;;&quot;C:\phpdev\php-5.3.8\main&quot;;&quot;C:\phpdev\php-5.3.8&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FIRSTPHPEXT_EXPORTS;PHP_WIN32;ZTS=1;ZEND_DEBUG=0"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="1"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -140,7 +142,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="php5ts.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="C:\phpdev\php\dev"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
